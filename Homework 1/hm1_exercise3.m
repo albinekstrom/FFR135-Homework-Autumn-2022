@@ -4,7 +4,7 @@ clear all
 steps = 10^4;
 epochs = 20;
 
-dim = [3];
+dim = [2,3,4,5];
 eta = 0.05;
 counter = [];
 syms k;

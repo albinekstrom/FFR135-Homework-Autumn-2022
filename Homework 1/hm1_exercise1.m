@@ -48,6 +48,7 @@ end
 %% Plot result to see what the distorted pattern converged to
 disturbed_pattern = reshape(original,[10,16])';
 converged_pattern = reshape(S_t, [10,16])';
+test = ((disturbed_pattern+1)/2)*256;
 
 colormap(gray(256))
 subplot(1,2,1)
