@@ -5,14 +5,14 @@
 clc
 clear variables
 
-eta = 0.01; % learning rate
+eta = 0.02; % learning rate
 
-M = [1,2,4,8]; % Hidden neurons
+M = [1,2,3,4,8]; % Hidden neurons
 N = 3; % Visiable neurons
 
-trails = 100;
+trails = 1000;
 minib = 20;
-k = 500;
+k = 2000;
 
 outer = 2000;
 inner = 3000;
@@ -31,7 +31,8 @@ for m = 1 : length(M)
     w = normrnd(0, 1, [M(m), N]);
     theta_v = zeros(N, 1); 
     theta_h = zeros(M(m), 1);
-
+  
+    % Trails loop
     for q = 1 : trails
 
         % Sample mini batches from XOR in X
@@ -64,11 +65,11 @@ for m = 1 : length(M)
                
             % Compute difference in weights and thresholds
             dw = dw + eta*(tanh(b_h_0)*v_0' - tanh(b_h)*v');
-            dt_v = dt_v - eta*(v_0-v);
-            dt_h = dt_h - eta*(tanh(b_h_0)-tanh(b_h));
+            dt_v = dt_v - eta*(v_0 - v);
+            dt_h = dt_h - eta*(tanh(b_h_0) - tanh(b_h));
 
         end % mini batches loop
-        
+
         % Update weights and thresholds
         w = w + dw;
         theta_v = theta_v + dt_v;
@@ -84,8 +85,7 @@ for m = 1 : length(M)
         x = X(:,randi(length(X)));
         
         % Set v = xi and update hidden layer
-        v = x;
-        b_h = b(w, v, theta_h);
+        b_h = b(w, x, theta_h);
         h = stochastic(b_h);
 
         % INNER LOOP
@@ -99,7 +99,7 @@ for m = 1 : length(M)
             h = stochastic(b_h);
             
             for mu = 1 : length(X)
-                if isequal(X(:,mu), v)
+                if v == X(:,mu)
                     P_B(mu) = P_B(mu) + 1/(outer*inner);
                 end
             end
@@ -108,13 +108,7 @@ for m = 1 : length(M)
     end % outer
     
     % KULLBACK-LEIBLER DIVERGENCE
-    
-    for p = 1 : 4
-        if P_B(p) == 0; lgPB = 0; 
-        else; lgPB = log(P_B(p)); end
-
-        DKL(m) = DKL(m) + P_D(p)*(log(P_D(p))-lgPB);
-    end
+    DKL(m) = sum(1/4*log(1./(4*P_B(1:4))));
 end
 
 %% THEORETICAL VALUE OF DKL
@@ -149,8 +143,7 @@ function pm = stochastic(local_field)
     pm = zeros(length(local_field),1);
     for i = 1 : length(local_field)
         prob = 1/(1+exp(-2*local_field(i)));
-        r = randn(1);
-        if r < prob
+        if rand < prob
             pm(i) = 1;
         else
             pm(i) = -1;
