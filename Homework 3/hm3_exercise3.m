@@ -22,7 +22,7 @@ eta_d = 0.01; % decay rate
 sigma_0 = 10; % initial value
 sigma_d = 0.05; % decay rate
 
-% Standardise
+% Standardise input data
 X = X./max(X);
 
 % Initializing train parameters
@@ -30,20 +30,21 @@ epochs = 10;
 p = length(t); % data length stochastic updates
 
 W_0 = rand(w_shape);
-D = zeros(output_shape);
+D = zeros(output_shape); % distance matrix
 
 %% Training
 
 % Initilizing weigths
 W = W_0;
 
+% Start training
 for e = 1 : epochs
 
     % Update learning rate and neighbourhood function
     eta = eta_0*exp(-eta_d * e);
     sigma = sigma_0*exp(-sigma_d * e);
 
-    for point = 1 : p
+    for data_point = 1 : p
         
         % Choose a data point randomly
         nbr = randi(p);
@@ -51,14 +52,15 @@ for e = 1 : epochs
 
         [i,j] = get_min_distance(W, xr, D, w_shape);
     
+        % Update weight matrix
         if D(i,j) < 3 / sigma
 
-            i0 = [i,j]; % min distance
+            idx0 = [i,j]; % min distance
             dw = zeros(w_shape); % empty delta matrix
 
             for i = 1 : w_shape(1)
                 for j = 1 : w_shape(2)
-                    Q = eta * h([i,j], i0, sigma);
+                    Q = eta * h([i,j], idx0, sigma);
                     for k = 1 : w_shape(3)
 
                     % Delta weight matrix
@@ -82,8 +84,8 @@ iris = zeros([40 2]);
 for x = 1 : p
 
     % Predicting winning neuron for each flower in data
-    [i0,j0] = get_min_distance(W_0,X(x,:),D,w_shape);
-    [i,j] = get_min_distance(W,X(x,:),D,w_shape);
+    [i0,j0] = get_min_distance(W_0,X(x,:),D,w_shape); % random weights
+    [i,j] = get_min_distance(W,X(x,:),D,w_shape); % trained weights 
     
     iris_rand(x,:) = [i0,j0];
     iris(x,:) = [i,j];
@@ -109,10 +111,10 @@ ax2.YLim = [-5 45];
 %% Functions
 
 function [row,col] = get_min_distance(weight, x, dist_matrix, shape)
-    for i = 1 : shape(1)
-        for j = 1 : shape(2)
-            d = 0;
-            for k = 1 : shape(3)
+    for i = 1 : shape(1) % 40
+        for j = 1 : shape(2) % 40
+            d = 0; % distance for i,j to i0,j0
+            for k = 1 : shape(3) % 4
                 d = d + (weight(i,j,k) - x(k))^2;
             end
             dist_matrix(i,j) = sqrt(d);
