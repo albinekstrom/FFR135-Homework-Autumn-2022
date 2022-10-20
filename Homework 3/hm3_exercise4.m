@@ -1,4 +1,4 @@
-%% Homework 2: Tic-Tac-Toe
+%% Homework 3: Tic-Tac-Toe
 % Albin Ekstrom
 % Date 20 okt 2022
 

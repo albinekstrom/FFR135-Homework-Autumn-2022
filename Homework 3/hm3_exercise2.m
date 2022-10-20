@@ -1,4 +1,4 @@
-%% Homework 2: Chaotic time series prediction
+%% Homework 3: Chaotic time series prediction
 % Albin Ekstrom
 % Date 15 okt 2022
 

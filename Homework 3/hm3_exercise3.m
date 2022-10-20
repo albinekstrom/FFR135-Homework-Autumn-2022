@@ -1,4 +1,4 @@
-%% Homework 2: Self organising map
+%% Homework 3: Self organising map
 % Albin Ekstrom
 % Date 16 okt 2022
 

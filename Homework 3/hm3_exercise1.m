@@ -1,4 +1,4 @@
-%% Homework 2: Classification challenge
+%% Homework 3: Classification challenge
 % Albin Ekström
 % Date 11 okt 2022
 
